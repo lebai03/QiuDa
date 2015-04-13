@@ -1,0 +1,2 @@
+configurations.create("default")
+artifacts.add("default", file('locSDK_5.0.jar'))

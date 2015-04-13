@@ -1,0 +1,2 @@
+configurations.create("default")
+artifacts.add("default", file('baidumapapi_v3_3_0.jar'))

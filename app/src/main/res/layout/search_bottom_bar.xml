@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="32dp"
+    android:orientation="horizontal"
+	android:descendantFocusability="blocksDescendants" >    
+<!--     android:gravity="center" -->
+    
+    <ImageView
+        android:id="@+id/imageViewLocStatus"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:paddingLeft="4dp"
+        android:background="@color/transparent"
+		android:layout_gravity="center_vertical"  />
+    
+    <TextView
+        android:id="@+id/textViewLoc"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:paddingLeft="24dp"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+		android:layout_weight="1"
+        android:layout_gravity="center_vertical"  />
+
+    <ImageButton
+        android:id="@+id/buttonRefresh"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/refresh"
+		android:layout_marginRight="10dp"
+		android:layout_gravity="center_vertical"  />
+    
+</LinearLayout>

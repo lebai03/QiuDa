@@ -1,0 +1,216 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+    <TabHost
+        android:id="@+id/tabHostMain"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"></TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentTop="true">
+
+                <RelativeLayout
+                    android:id="@+id/tabHost"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical"></RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/tabGuest"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imgItemSoccer"
+                        android:src="@drawable/soccer"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginLeft="6dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/imgItemBasketball"
+                        android:src="@drawable/basketball"
+                        android:layout_alignTop="@id/imgItemSoccer"
+                        android:layout_toRightOf="@+id/imgItemSoccer"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/imgItemBadminton"
+                        android:src="@drawable/badminton"
+                        android:layout_alignTop="@id/imgItemSoccer"
+                        android:layout_toRightOf="@+id/imgItemBasketball"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/imgItemPingpong"
+                        android:src="@drawable/pingpong"
+                        android:layout_alignTop="@id/imgItemSoccer"
+                        android:layout_toRightOf="@+id/imgItemBadminton"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textItemSoccer"
+                        android:text="足球"
+                        android:layout_alignLeft="@id/imgItemSoccer"
+                        android:layout_alignStart="@id/imgItemSoccer"
+                        android:layout_below="@+id/imgItemSoccer"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:id="@+id/textItemBasketball"
+                        android:text="篮球"
+                        android:layout_alignLeft="@id/imgItemBasketball"
+                        android:layout_alignStart="@id/imgItemBasketball"
+                        android:layout_below="@+id/imgItemBasketball"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:id="@+id/textItemBadminton"
+                        android:text="羽毛球"
+                        android:layout_alignLeft="@id/imgItemBadminton"
+                        android:layout_alignStart="@id/imgItemBadminton"
+                        android:layout_below="@+id/imgItemBadminton"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:id="@+id/textItemPingpong"
+                        android:text="乒乓球"
+                        android:layout_alignLeft="@id/imgItemPingpong"
+                        android:layout_alignStart="@id/imgItemPingpong"
+                        android:layout_below="@+id/imgItemPingpong"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                    <ImageView
+                        android:id="@+id/imgItemCards"
+                        android:src="@drawable/cards"
+                        android:layout_alignLeft="@id/imgItemSoccer"
+                        android:layout_alignStart="@id/imgItemSoccer"
+                        android:layout_below="@+id/textItemSoccer"
+                        android:layout_marginTop="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/imgItemChess"
+                        android:src="@drawable/chess"
+                        android:layout_alignLeft="@id/imgItemBasketball"
+                        android:layout_alignStart="@id/imgItemBasketball"
+                        android:layout_below="@+id/textItemBasketball"
+                        android:layout_marginTop="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/imgItemSnooker"
+                        android:src="@drawable/snooker"
+                        android:layout_alignLeft="@id/imgItemBadminton"
+                        android:layout_alignStart="@id/imgItemBadminton"
+                        android:layout_below="@+id/textItemBadminton"
+                        android:layout_marginTop="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/imgItemAll"
+                        android:src="@drawable/all"
+                        android:layout_alignLeft="@id/imgItemPingpong"
+                        android:layout_alignStart="@id/imgItemPingpong"
+                        android:layout_below="@+id/textItemPingpong"
+                        android:layout_marginTop="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textItemCards"
+                        android:text="牌类"
+                        android:layout_alignLeft="@id/imgItemCards"
+                        android:layout_alignStart="@id/imgItemCards"
+                        android:layout_below="@+id/imgItemCards"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:id="@+id/textItemChess"
+                        android:text="棋类"
+                        android:layout_alignLeft="@id/imgItemChess"
+                        android:layout_alignStart="@id/imgItemChess"
+                        android:layout_below="@+id/imgItemChess"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:id="@+id/textItemSnooker"
+                        android:text="桌球"
+                        android:layout_alignLeft="@id/imgItemSnooker"
+                        android:layout_alignStart="@id/imgItemSnooker"
+                        android:layout_below="@+id/imgItemSnooker"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:id="@+id/textItemAll"
+                        android:text="全部分类"
+                        android:layout_alignLeft="@id/imgItemAll"
+                        android:layout_alignStart="@id/imgItemAll"
+                        android:layout_below="@+id/imgItemAll"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                </RelativeLayout>
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+</RelativeLayout>

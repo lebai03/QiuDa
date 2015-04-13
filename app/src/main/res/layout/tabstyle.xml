@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="40dp"
+    android:paddingLeft="5dip"
+    android:paddingRight="5dip">
+
+    <TextView
+        android:id="@+id/tab_focused"
+        android:layout_alignParentTop="true"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/white_dot" />
+
+    <TextView android:id="@+id/tab_label"
+        android:layout_width="fill_parent"
+        android:layout_height="28dp"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="4dp"
+        android:gravity="center"
+        android:textStyle="bold"/>
+</RelativeLayout>  

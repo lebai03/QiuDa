@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="category_array">
+        <item>足球</item>
+        <item>篮球</item>
+        <item>羽毛球</item>
+        <item>乒乓球</item>
+        <item>棋类</item>
+        <item>牌类</item>
+        <item>桌球</item>
+        <item>全部分类</item>
+    </string-array>
+
+</resources>
