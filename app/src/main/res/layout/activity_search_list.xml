@@ -25,8 +25,15 @@
         android:src="@drawable/map"
         android:scaleType="fitXY"
         android:background="@color/transparent"
+        android:paddingTop="4dp"
+        android:paddingLeft="4dp"
+        android:paddingBottom="4dp"
+        android:paddingRight="4dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:onClick="onClickMap" />
 
     <ListView
         android:layout_width="wrap_content"

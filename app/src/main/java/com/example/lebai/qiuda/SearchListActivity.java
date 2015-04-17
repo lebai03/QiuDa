@@ -58,7 +58,7 @@ public class SearchListActivity extends ActionBarActivity {
             // //执行接收到的通知，更新UI 此时执行的顺序是按照队列进行，即先进先出
             super.handleMessage(msg);
             Bundle bun = msg.getData();
-            String address = "您的当前位置：" + bun.getString("address");
+            String address = "当前位置：" + bun.getString("address");
             switch (msg.what) {
                 case LOCATING:
                     mProgDlg.show();
@@ -159,7 +159,7 @@ public class SearchListActivity extends ActionBarActivity {
             }
         });
 
-        SearchBottomBar.setSearchBottomBar(mContext, "您的当前位置：", R.drawable.circle_red);
+        SearchBottomBar.setSearchBottomBar(mContext, "当前位置：", R.drawable.circle_red);
 
         mProgDlg = new ProgressDialog(mContext);
         mProgDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -173,44 +173,9 @@ public class SearchListActivity extends ActionBarActivity {
         super.onResume();
 
         mLocUtil = new LocUtil(getApplicationContext());
-        new Thread(){
-            @Override
-            public void run()
-            {
-                mLocUtil.startRequestLocation();
-                float accuracy;
-                int cnt = 0;
 
-                Message msg = new Message();
-                msg.what = LOCATING;
-                SearchListActivity.this.mHandler.sendMessage(msg);
-
-                while(cnt < LOCATE_TIMES) {
-                    SystemClock.sleep(1000);
-                    if (mLocUtil.getLocation(mLoc) == -1)
-                        continue;
-                    accuracy = mLoc.getAccuracy();
-                    Log.v("SearchListActivity", "Accuracy " + accuracy + " cnt " + cnt);
-                    if (accuracy < 100) {
-                        break;
-                    }
-                    cnt += 1;
-                }
-                msg = new Message();
-                if (cnt < LOCATE_TIMES) {
-                    msg.what = LOCATE_GREEN_SUCCESS;
-                }
-                else if (cnt == LOCATE_TIMES) {
-                    msg.what = LOCATE_YELLOW_SUCCESS;
-                }
-                Bundle bun = mLoc.getExtras();
-                msg.setData(bun);
-                SearchListActivity.this.mHandler.sendMessage(msg);
-
-                mLocUtil.endRequestLocation();
-            }
-        }.start();
-
+        mRunFlag = true;
+        runLocateThread();
         Log.v("SearchListActivity", "onResume finish");
     }
 
@@ -234,6 +199,53 @@ public class SearchListActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void runLocateThread() {
+
+        new Thread(){
+            @Override
+            public void run()
+            {
+                while(!mRunFlag) {
+                    SystemClock.sleep(200);
+                }
+                mRunFlag = false;
+                mLocUtil.startRequestLocation();
+                float accuracy;
+                int cnt = 0;
+
+                Message msg = new Message();
+                msg.what = LOCATING;
+                SearchListActivity.this.mHandler.sendMessage(msg);
+
+                while(cnt < LOCATE_TIMES) {
+                    SystemClock.sleep(1000);
+                    if (mLocUtil.getLocation(mLoc) == -1)
+                        continue;
+                    accuracy = mLoc.getAccuracy();
+                    Log.v("SearchListActivity", "Accuracy " + accuracy + " cnt " + cnt);
+                    if (accuracy < 100) {
+                        break;
+                    }
+                    cnt += 1;
+                }
+
+                mLocUtil.endRequestLocation();
+
+                msg = new Message();
+                if (cnt < LOCATE_TIMES) {
+                    msg.what = LOCATE_GREEN_SUCCESS;
+                }
+                else if (cnt == LOCATE_TIMES) {
+                    msg.what = LOCATE_YELLOW_SUCCESS;
+                }
+                Bundle bun = mLoc.getExtras();
+                msg.setData(bun);
+                mHandler.sendMessage(msg);
+            }
+        }.start();
+
     }
 
     public void onClickReloc(View v) {
@@ -261,49 +273,12 @@ public class SearchListActivity extends ActionBarActivity {
         else
             mRunFlag = true;
 
-        SearchBottomBar.setSearchBottomBar(mContext, "您的当前位置：", R.drawable.circle_red);
+        SearchBottomBar.setSearchBottomBar(mContext, "当前位置：", R.drawable.circle_red);
 
-        new Thread(){
-            @Override
-            public void run()
-            {
-                while(!mRunFlag) {
-                    SystemClock.sleep(200);
-                }
-                mRunFlag = false;
-                mLocUtil.startRequestLocation();
-                float accuracy;
-                int cnt = 0;
-
-                Message msg = new Message();
-                msg.what = LOCATING;
-                SearchListActivity.this.mHandler.sendMessage(msg);
-
-                while(cnt < LOCATE_TIMES) {
-                    SystemClock.sleep(1000);
-                    mLocUtil.getLocation(mLoc);
-                    accuracy = mLoc.getAccuracy();
-                    Log.v("SearchListActivity", "Accuracy " + accuracy + " cnt " + cnt);
-                    if (accuracy < 100) {
-                        break;
-                    }
-                    cnt += 1;
-                }
-
-                mLocUtil.endRequestLocation();
-
-                msg = new Message();
-                if (cnt < LOCATE_TIMES) {
-                    msg.what = LOCATE_GREEN_SUCCESS;
-                }
-                else if (cnt == LOCATE_TIMES) {
-                    msg.what = LOCATE_YELLOW_SUCCESS;
-                }
-                Bundle bun = mLoc.getExtras();
-                msg.setData(bun);
-                mHandler.sendMessage(msg);
-            }
-        }.start();
+        runLocateThread();
     }
 
+    public void onClickMap(View v) {
+
+    }
 }
