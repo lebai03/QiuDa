@@ -21,6 +21,8 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 
+import com.baidu.mapapi.SDKInitializer;
+
 import miscutils.CommonUtil;
 
 
@@ -48,6 +50,7 @@ public class MainActivity extends ActionBarActivity  {
 
 //        updateTabHostPage();
         updateTabGuestPage();
+        SDKInitializer.initialize(getApplicationContext());
     }
 
     private void updateTab() {

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -42,13 +43,13 @@ public class SearchListActivity extends ActionBarActivity {
     private static final int LOCATE_TIMES = 5;
     private static final int LOCATE_GREEN_SUCCESS = 2;
     private static final int LOCATE_YELLOW_SUCCESS = 3;
-    private static final int LOCATING = 4;
+    private static final int LOCATE_RED_FAILURE = 4;
+    private static final int LOCATING = 5;
     private Context mContext = null;
     private SearchSpinnerAdapter adapterDistance;
     private SearchSpinnerAdapter adapterCategory;
     private ProgressDialog mProgDlg;
     private LocUtil mLocUtil;
-    private Location mLoc;
     private volatile boolean mRunFlag = false;
 
     private Handler mHandler = new Handler() {
@@ -71,6 +72,10 @@ public class SearchListActivity extends ActionBarActivity {
                     SearchBottomBar.setSearchBottomBar(mContext, address, R.drawable.circle_yellow);
                     mProgDlg.dismiss();
                     break;
+                case LOCATE_RED_FAILURE:
+                    SearchBottomBar.setSearchBottomBar(mContext, address, R.drawable.circle_red);
+                    mProgDlg.dismiss();
+                    break;
             }
         }
 
@@ -85,7 +90,6 @@ public class SearchListActivity extends ActionBarActivity {
         Bundle bun = this.getIntent().getExtras();
         int index = bun.getInt("index");
 
-        mLoc = new Location("");
         mContext = this;
         int screenWidth = CommonUtil.getWidth(mContext);
 
@@ -174,8 +178,27 @@ public class SearchListActivity extends ActionBarActivity {
 
         mLocUtil = new LocUtil(getApplicationContext());
 
-        mRunFlag = true;
-        runLocateThread();
+        if (mLocUtil.isFirstLocation() == true) {
+            mRunFlag = true;
+            runLocateThread();
+        }
+        else {
+            Location loc = new Location("");
+            Message msg = new Message();
+            if (mLocUtil.getLocation(loc) != -1) {
+                if (loc.getAccuracy() < 100) {
+                    msg.what = LOCATE_GREEN_SUCCESS;
+                } else {
+                    msg.what = LOCATE_YELLOW_SUCCESS;
+                }
+            }
+            else {
+                msg.what = LOCATE_RED_FAILURE;
+            }
+            Bundle bun = loc.getExtras();
+            msg.setData(bun);
+            mHandler.sendMessage(msg);
+        }
         Log.v("SearchListActivity", "onResume finish");
     }
 
@@ -212,8 +235,11 @@ public class SearchListActivity extends ActionBarActivity {
                 }
                 mRunFlag = false;
                 mLocUtil.startRequestLocation();
-                float accuracy;
                 int cnt = 0;
+                Location loc = new Location("");
+                double currentLatitude = 0.0;
+                double currentLongitude = 0.0;
+                float currentAccuracy = 0;
 
                 Message msg = new Message();
                 msg.what = LOCATING;
@@ -221,11 +247,13 @@ public class SearchListActivity extends ActionBarActivity {
 
                 while(cnt < LOCATE_TIMES) {
                     SystemClock.sleep(1000);
-                    if (mLocUtil.getLocation(mLoc) == -1)
+                    if (mLocUtil.getLocation(loc) == -1)
                         continue;
-                    accuracy = mLoc.getAccuracy();
-                    Log.v("SearchListActivity", "Accuracy " + accuracy + " cnt " + cnt);
-                    if (accuracy < 100) {
+                    currentAccuracy = loc.getAccuracy();
+                    currentLatitude = loc.getLatitude();
+                    currentLongitude = loc.getLongitude();
+                    Log.v("SearchListActivity", "Accuracy " + currentAccuracy + " cnt " + cnt);
+                    if (currentAccuracy < 100) {
                         break;
                     }
                     cnt += 1;
@@ -240,7 +268,7 @@ public class SearchListActivity extends ActionBarActivity {
                 else if (cnt == LOCATE_TIMES) {
                     msg.what = LOCATE_YELLOW_SUCCESS;
                 }
-                Bundle bun = mLoc.getExtras();
+                Bundle bun = loc.getExtras();
                 msg.setData(bun);
                 mHandler.sendMessage(msg);
             }
@@ -279,6 +307,16 @@ public class SearchListActivity extends ActionBarActivity {
     }
 
     public void onClickMap(View v) {
-
+        Bundle bun = new Bundle();
+        Intent it = new Intent();
+        Location loc = new Location("");
+        if (mLocUtil.getLocation(loc) != -1) {
+            bun.putDouble("Lat", loc.getLatitude());
+            bun.putDouble("Lng", loc.getLongitude());
+            bun.putFloat("Accu", loc.getAccuracy());
+        }
+        it.putExtras(bun);
+        it.setClass(this.mContext, BaiduMapActivity.class);
+        startActivity(it);
     }
 }

@@ -28,19 +28,18 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
  */
 public class LocUtil {
 
-    private LocationClient mLocationClient;
     public MyLocationListener mMyLocationListener;
-    private volatile boolean isFirstLocation = true;
+    private LocationClient mLocationClient;
+    private static volatile boolean isFirstLocation = true;
     private volatile boolean isRequest = false;
-    private double mCurrentLatitude = 0.0;
-    private double mCurrentLongitude = 0.0;
-    private float mCurrentAccuracy = 0;
-    private String mCurrentAddress = "";
+    private static double mCurrentLatitude = 0.0;
+    private static double mCurrentLongitude = 0.0;
+    private static float mCurrentAccuracy = 0;
+    private static String mCurrentAddress = "";
     private Context mContext = null;
     private GeoCoder mGC = null;
 
     public LocUtil(Context context) {
-        SDKInitializer.initialize(context);
         mContext = context;
         mGC = GeoCoder.newInstance();
         OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
@@ -90,6 +89,10 @@ public class LocUtil {
         mLocationClient.setLocOption(option);
     }
 
+    public boolean isFirstLocation() {
+        return isFirstLocation;
+    }
+
     public int getLocation (Location loc) {
         if (isRequest || isFirstLocation) {
             return -1;
@@ -97,7 +100,7 @@ public class LocUtil {
 
         Bundle bun = new Bundle();
         loc.setAccuracy(mCurrentAccuracy);
-        loc.setAltitude(mCurrentLatitude);
+        loc.setLatitude(mCurrentLatitude);
         loc.setLongitude(mCurrentLongitude);
         bun.putString("address", mCurrentAddress);
         loc.setExtras(bun);
