@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="32dp"
     android:orientation="horizontal"
 	android:descendantFocusability="blocksDescendants" >    
@@ -17,13 +17,14 @@
     <TextView
         android:id="@+id/textViewLoc"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="match_parent"
         android:paddingLeft="24dp"
         android:textColor="@color/black"
         android:textSize="12sp"
 		android:layout_weight="1"
-        android:layout_gravity="center_vertical"  />
+        android:gravity="center_vertical"  />
 
+<!--
     <ImageButton
         android:id="@+id/buttonRefresh"
         android:layout_width="20dp"
@@ -31,5 +32,6 @@
         android:background="@drawable/refresh"
 		android:layout_marginRight="10dp"
 		android:layout_gravity="center_vertical"  />
-    
+-->
+
 </LinearLayout>

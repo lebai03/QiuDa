@@ -5,12 +5,14 @@ import java.util.HashMap;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -19,11 +21,13 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout.LayoutParams;
+
+import miscutils.CommonUtil;
 
 public class SearchBottomBar extends Activity{
 	
-    public static void createSearchBottomBar(Context context, String text, int picId) {
+    public static void setSearchBottomBar(Context context, String text, int picId) {
         ListView lvSBB = (ListView) ((Activity) context)
                 .findViewById(R.id.listViewLoc);
 
@@ -39,6 +43,16 @@ public class SearchBottomBar extends Activity{
                 "ItemTitle" }, new int[] { R.id.imageViewLocStatus,
                 R.id.textViewLoc });
 
+        /*
+        LayoutParams lp = new LayoutParams(CommonUtil.getWidth(context)-CommonUtil.dip2px(context, 32),
+                CommonUtil.dip2px(context, 32));
+        lp.leftMargin = 0;
+        lp.rightMargin = CommonUtil.dip2px(context, 32);
+        Log.v("SearchBottomBar", "right " + lp.rightMargin);
+        lp.bottomMargin = 0;
+        lvSBB.setLayoutParams(lp);
+        */
+        lvSBB.setBackgroundColor(context.getResources().getColor(R.color.gainsboro));
         lvSBB.setAdapter(mSimpleAdapter);
 
         return;

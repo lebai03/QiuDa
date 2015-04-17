@@ -1,44 +1,93 @@
 package com.example.lebai.qiuda;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
+import android.location.LocationManager;
+import android.net.wifi.WifiManager;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import miscutils.CommonUtil;
+import miscutils.LocUtil;
 
 
 public class SearchListActivity extends ActionBarActivity {
 
+    private static final int LOCATE_TIMES = 5;
+    private static final int LOCATE_GREEN_SUCCESS = 2;
+    private static final int LOCATE_YELLOW_SUCCESS = 3;
+    private static final int LOCATING = 4;
     private Context mContext = null;
     private SearchSpinnerAdapter adapterDistance;
     private SearchSpinnerAdapter adapterCategory;
+    private ProgressDialog mProgDlg;
+    private LocUtil mLocUtil;
+    private Location mLoc;
+    private volatile boolean mRunFlag = false;
+
+    private Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            // //执行接收到的通知，更新UI 此时执行的顺序是按照队列进行，即先进先出
+            super.handleMessage(msg);
+            Bundle bun = msg.getData();
+            String address = "您的当前位置：" + bun.getString("address");
+            switch (msg.what) {
+                case LOCATING:
+                    mProgDlg.show();
+                    break;
+                case LOCATE_GREEN_SUCCESS:
+                    SearchBottomBar.setSearchBottomBar(mContext, address, R.drawable.circle_green);
+                    mProgDlg.dismiss();
+                    break;
+                case LOCATE_YELLOW_SUCCESS:
+                    SearchBottomBar.setSearchBottomBar(mContext, address, R.drawable.circle_yellow);
+                    mProgDlg.dismiss();
+                    break;
+            }
+        }
+
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_list);
 
-        Bundle bun = new Bundle();
-        bun = this.getIntent().getExtras();
+        Bundle bun = this.getIntent().getExtras();
         int index = bun.getInt("index");
 
+        mLoc = new Location("");
         mContext = this;
         int screenWidth = CommonUtil.getWidth(mContext);
-        int screenHeight = CommonUtil.getHeight(mContext);
-        float screenDensity = CommonUtil.getDensity(mContext);
 
         int firstHeight = CommonUtil.dip2px(mContext, 40);
         if (firstHeight > (screenWidth / 6)) {
@@ -110,11 +159,60 @@ public class SearchListActivity extends ActionBarActivity {
             }
         });
 
+        SearchBottomBar.setSearchBottomBar(mContext, "您的当前位置：", R.drawable.circle_red);
 
-        SearchBottomBar.createSearchBottomBar(mContext, "您的当前位置：", R.drawable.circle_yellow);
+        mProgDlg = new ProgressDialog(mContext);
+        mProgDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgDlg.setMessage("定位中，请稍等。。。");
+        mProgDlg.setIndeterminate(false);
+        mProgDlg.setCancelable(false);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        mLocUtil = new LocUtil(getApplicationContext());
+        new Thread(){
+            @Override
+            public void run()
+            {
+                mLocUtil.startRequestLocation();
+                float accuracy;
+                int cnt = 0;
+
+                Message msg = new Message();
+                msg.what = LOCATING;
+                SearchListActivity.this.mHandler.sendMessage(msg);
+
+                while(cnt < LOCATE_TIMES) {
+                    SystemClock.sleep(1000);
+                    if (mLocUtil.getLocation(mLoc) == -1)
+                        continue;
+                    accuracy = mLoc.getAccuracy();
+                    Log.v("SearchListActivity", "Accuracy " + accuracy + " cnt " + cnt);
+                    if (accuracy < 100) {
+                        break;
+                    }
+                    cnt += 1;
+                }
+                msg = new Message();
+                if (cnt < LOCATE_TIMES) {
+                    msg.what = LOCATE_GREEN_SUCCESS;
+                }
+                else if (cnt == LOCATE_TIMES) {
+                    msg.what = LOCATE_YELLOW_SUCCESS;
+                }
+                Bundle bun = mLoc.getExtras();
+                msg.setData(bun);
+                SearchListActivity.this.mHandler.sendMessage(msg);
+
+                mLocUtil.endRequestLocation();
+            }
+        }.start();
+
+        Log.v("SearchListActivity", "onResume finish");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,4 +235,75 @@ public class SearchListActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void onClickReloc(View v) {
+        Log.v("SearchListActivity", "Click Reloc");
+
+        WifiManager wm = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+        LocationManager alm =
+                (LocationManager)this.getSystemService( Context.LOCATION_SERVICE );
+        if( !alm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER )
+                && !wm.isWifiEnabled()) {
+            Dialog alertDialog = new AlertDialog.Builder(this).
+                    setTitle("提示").
+                    setMessage("请打开GPS或者无线网络开关以提高定位的准确度").
+                    setPositiveButton("确定", new DialogInterface.OnClickListener() {//设置确定的按键
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //do something
+                            mRunFlag = true;
+                        }
+                    }).
+                    create();
+            alertDialog.show();
+//            initPopWindow(mContext, v);
+        }
+        else
+            mRunFlag = true;
+
+        SearchBottomBar.setSearchBottomBar(mContext, "您的当前位置：", R.drawable.circle_red);
+
+        new Thread(){
+            @Override
+            public void run()
+            {
+                while(!mRunFlag) {
+                    SystemClock.sleep(200);
+                }
+                mRunFlag = false;
+                mLocUtil.startRequestLocation();
+                float accuracy;
+                int cnt = 0;
+
+                Message msg = new Message();
+                msg.what = LOCATING;
+                SearchListActivity.this.mHandler.sendMessage(msg);
+
+                while(cnt < LOCATE_TIMES) {
+                    SystemClock.sleep(1000);
+                    mLocUtil.getLocation(mLoc);
+                    accuracy = mLoc.getAccuracy();
+                    Log.v("SearchListActivity", "Accuracy " + accuracy + " cnt " + cnt);
+                    if (accuracy < 100) {
+                        break;
+                    }
+                    cnt += 1;
+                }
+
+                mLocUtil.endRequestLocation();
+
+                msg = new Message();
+                if (cnt < LOCATE_TIMES) {
+                    msg.what = LOCATE_GREEN_SUCCESS;
+                }
+                else if (cnt == LOCATE_TIMES) {
+                    msg.what = LOCATE_YELLOW_SUCCESS;
+                }
+                Bundle bun = mLoc.getExtras();
+                msg.setData(bun);
+                mHandler.sendMessage(msg);
+            }
+        }.start();
+    }
+
 }

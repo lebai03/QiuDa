@@ -8,8 +8,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/spinnerDistance"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentStart="true"/>
 
     <Spinner
         android:layout_width="wrap_content"
@@ -17,7 +16,6 @@
         android:id="@+id/spinnerCategory"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_toStartOf="@+id/imageButtonMap" />
 
     <ImageButton
@@ -28,8 +26,7 @@
         android:scaleType="fitXY"
         android:background="@color/transparent"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentEnd="true" />
 
     <ListView
         android:layout_width="wrap_content"
@@ -37,8 +34,24 @@
         android:id="@+id/listViewLoc"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
-        android:paddingBottom="0dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp" />
+        android:layout_marginEnd="32dp"
+        android:paddingBottom="0dp"/>
+
+    <ImageButton
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:id="@+id/imageButtonReloc"
+        android:src="@drawable/refresh"
+        android:scaleType="fitXY"
+        android:background="@color/gainsboro"
+        android:paddingTop="4dp"
+        android:paddingLeft="4dp"
+        android:paddingBottom="4dp"
+        android:paddingRight="4dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:onClick="onClickReloc" />
 
 </RelativeLayout>
