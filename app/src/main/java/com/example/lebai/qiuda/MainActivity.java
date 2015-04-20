@@ -30,7 +30,8 @@ public class MainActivity extends ActionBarActivity  {
 
     TabHost mTabhost = null;
     private Context mContext = null;
-    private int itemNum = 8;
+    private int guestItemNum = 8;
+    private int hostItemNum = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class MainActivity extends ActionBarActivity  {
         Log.v("MainActivity", "Screen w h density" + Integer.toString(screenWidth) +
                 " " + Integer.toString(screenHeight) + " " + Float.toString(screenDensity));
 
-//        updateTabHostPage();
+        updateTabHostPage();
         updateTabGuestPage();
         SDKInitializer.initialize(getApplicationContext());
     }
@@ -109,18 +110,24 @@ public class MainActivity extends ActionBarActivity  {
         });
     }
 
+    public void updateTabHostPage() {
+        int[] imageViewId = new int[hostItemNum];
+        int[] textViewId = new int[hostItemNum];
+        int[] editViewId = new int[hostItemNum];
+    }
+
     public void updateTabGuestPage() {
-        int[] imageViewId = new int[itemNum];
-        int[] textViewId = new int[itemNum];
-        int[] picWidth = new int[itemNum];
-        int[] picHeight = new int[itemNum];
-        int[] picPaddingLeft = new int[itemNum];
-        int[] picPaddingTop = new int[itemNum];
-        int[] txtPaddingTop = new int[itemNum];
-        int[] txtPaddingLeft = new int[itemNum];
-        int[] txtWidth = new int[itemNum];
-        int[] txtHeight = new int[itemNum];
-        int[] heightCtn = new int[itemNum];
+        int[] imageViewId = new int[guestItemNum];
+        int[] textViewId = new int[guestItemNum];
+        int[] picWidth = new int[guestItemNum];
+        int[] picHeight = new int[guestItemNum];
+        int[] picPaddingLeft = new int[guestItemNum];
+        int[] picPaddingTop = new int[guestItemNum];
+        int[] txtPaddingTop = new int[guestItemNum];
+        int[] txtPaddingLeft = new int[guestItemNum];
+        int[] txtWidth = new int[guestItemNum];
+        int[] txtHeight = new int[guestItemNum];
+        int[] heightCtn = new int[guestItemNum];
         int screenWidth = CommonUtil.getWidth(mContext);
         int screenHeight = CommonUtil.getHeight(mContext);
 
@@ -142,7 +149,7 @@ public class MainActivity extends ActionBarActivity  {
         textViewId[6] = R.id.textItemSnooker;
         textViewId[7] = R.id.textItemAll;
 
-        for (int i=0;i<(itemNum/2);i++) {
+        for (int i=0;i<(guestItemNum/2);i++) {
             picWidth[i] = (int) (screenWidth / 5);
             picHeight[i] = picWidth[i];
             picPaddingLeft[i] = (int)(screenWidth / 30) * (i+1) + picWidth[i] * i;
@@ -176,11 +183,11 @@ public class MainActivity extends ActionBarActivity  {
             tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, heightCtn[i]);
         }
 
-        for (int i=(itemNum/2);i<itemNum;i++) {
+        for (int i=(guestItemNum/2);i<guestItemNum;i++) {
             picWidth[i] = (int) (screenWidth / 5);
             picHeight[i] = picWidth[i];
-            picPaddingLeft[i] = (int)(screenWidth / 30) * (i+1-(itemNum/2)) + picWidth[i] * (i-(itemNum/2));
-            picPaddingTop[i] = 24 + txtPaddingTop[i - (itemNum/2)] + txtHeight[i - (itemNum/2)];
+            picPaddingLeft[i] = (int)(screenWidth / 30) * (i+1-(guestItemNum/2)) + picWidth[i] * (i-(guestItemNum/2));
+            picPaddingTop[i] = 24 + txtPaddingTop[i - (guestItemNum/2)] + txtHeight[i - (guestItemNum/2)];
 
             heightCtn[i] = 40;
             txtPaddingLeft[i] = picPaddingLeft[i];
@@ -210,7 +217,7 @@ public class MainActivity extends ActionBarActivity  {
             tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, heightCtn[i]);
         }
 
-        for(int i=0;i<itemNum;i++) {
+        for(int i=0;i<guestItemNum;i++) {
             ImageView iv = (ImageView)findViewById(imageViewId[i]);
             iv.setId(i);
             iv.setOnClickListener(new ButtonListener());

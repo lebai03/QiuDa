@@ -37,7 +37,36 @@
                     android:id="@+id/tabHost"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:orientation="vertical"></RelativeLayout>
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imgItemType"
+                        android:src="@drawable/category"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp" />
+
+                    <TextView
+                        android:id="@+id/textItemType"
+                        android:text="分类"
+                        android:textSize="32sp"
+                        android:layout_marginTop="16dp"
+                        android:layout_toEndOf="@+id/imgItemType"
+                        android:paddingStart="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_toEndOf="@+id/textItemType"
+                        android:paddingStart="4dp" />
+
+
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/tabGuest"

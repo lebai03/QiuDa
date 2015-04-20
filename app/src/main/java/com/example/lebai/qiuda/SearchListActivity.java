@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -22,13 +23,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -50,6 +56,8 @@ public class SearchListActivity extends ActionBarActivity {
     private SearchSpinnerAdapter adapterCategory;
     private ProgressDialog mProgDlg;
     private LocUtil mLocUtil;
+    private ListView mResultLV;
+    private SearchResultWrapper mSRW;
     private volatile boolean mRunFlag = false;
 
     private Handler mHandler = new Handler() {
@@ -86,6 +94,18 @@ public class SearchListActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_list);
+
+        mResultLV = (ListView)findViewById(R.id.listViewLoc);
+        mResultLV.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mResultLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+            }
+        });
+
+        mSRW = SearchResultWrapper.getInstance();
 
         Bundle bun = this.getIntent().getExtras();
         int index = bun.getInt("index");
@@ -178,7 +198,7 @@ public class SearchListActivity extends ActionBarActivity {
 
         mLocUtil = new LocUtil(getApplicationContext());
 
-        if (mLocUtil.isFirstLocation() == true) {
+        if (mLocUtil.isFirstLocation()) {
             mRunFlag = true;
             runLocateThread();
         }
@@ -237,8 +257,6 @@ public class SearchListActivity extends ActionBarActivity {
                 mLocUtil.startRequestLocation();
                 int cnt = 0;
                 Location loc = new Location("");
-                double currentLatitude = 0.0;
-                double currentLongitude = 0.0;
                 float currentAccuracy = 0;
 
                 Message msg = new Message();
@@ -250,8 +268,6 @@ public class SearchListActivity extends ActionBarActivity {
                     if (mLocUtil.getLocation(loc) == -1)
                         continue;
                     currentAccuracy = loc.getAccuracy();
-                    currentLatitude = loc.getLatitude();
-                    currentLongitude = loc.getLongitude();
                     Log.v("SearchListActivity", "Accuracy " + currentAccuracy + " cnt " + cnt);
                     if (currentAccuracy < 100) {
                         break;
@@ -319,4 +335,69 @@ public class SearchListActivity extends ActionBarActivity {
         it.setClass(this.mContext, BaiduMapActivity.class);
         startActivity(it);
     }
+
+    private class ResultAdapter extends BaseAdapter {
+        private LayoutInflater inflater;
+
+        public ResultAdapter(Context context) {
+            inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public int getCount() {
+            if(mSRW.getResultList() != null)
+                return mSRW.getResultList().size();
+            else
+                return 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            if ((mSRW.getResultList() != null) && (position < mSRW.getResultList().size())) {
+                return mSRW.getResultList().get(position);
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        public long getItemId(int position) {
+//			if (position < mSrlist.size()) {
+//				return ((View) mSrlist.get(position)).getId();
+//			} else {
+//				return -1;
+//			}
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            View view;
+            if (convertView != null && convertView.getId() == R.id.listViewLoc) {
+                view = convertView;
+            } else {
+                view = inflater.inflate(R.layout.search_result_list, parent, false);
+            }
+
+            ItemViewHolder holder = (ItemViewHolder) view.getTag();
+            if (holder == null) {
+                holder = new ItemViewHolder();
+                holder.categoryImageView = (ImageView) view.findViewById(R.id.CategoryImageView);
+                holder.noteTextView = (TextView) view.findViewById(R.id.NoteTextView);
+                holder.numberTextView = (TextView) view.findViewById(R.id.NumberTextView);
+                view.setTag(holder);
+            }
+
+            return view;
+        }
+    }
+
+    protected class ItemViewHolder {
+        public ImageView categoryImageView;
+        public TextView noteTextView;
+        public TextView numberTextView;
+    }
+
 }
