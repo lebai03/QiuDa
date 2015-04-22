@@ -14,9 +14,6 @@ public class SearchResultWrapper {
     private static SearchResultWrapper mInstance = null;
 
     public SearchResultWrapper() {
-        if (mInstance == null) {
-            mInstance = new SearchResultWrapper();
-        }
     }
 
     public static SearchResultWrapper getInstance() {

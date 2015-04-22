@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -31,7 +32,7 @@ public class MainActivity extends ActionBarActivity  {
     TabHost mTabhost = null;
     private Context mContext = null;
     private int guestItemNum = 8;
-    private int hostItemNum = 4;
+    private int hostItemNum = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +114,82 @@ public class MainActivity extends ActionBarActivity  {
     public void updateTabHostPage() {
         int[] imageViewId = new int[hostItemNum];
         int[] textViewId = new int[hostItemNum];
-        int[] editViewId = new int[hostItemNum];
+        int[] lastId = new int[hostItemNum];
+        int[] imageViewWidth = new int[hostItemNum];
+        int[] imageViewHeight = new int[hostItemNum];
+        int[] imageViewMarginTop = new int[hostItemNum];
+        int[] imageViewPadding = new int[hostItemNum];
+        int[] textViewWidth = new int[hostItemNum];
+        int[] textViewHeight = new int[hostItemNum];
+        int[] textViewMarginTop = new int[hostItemNum];
+        int[] textViewMarginLeft = new int[hostItemNum];
+        int[] textViewPadding = new int[hostItemNum];
+        int[] lastViewHeight = new int[hostItemNum];
+        int[] lastViewWidth = new int[hostItemNum];
+        int[] lastViewMarginTop = new int[hostItemNum];
+        int[] lastViewMarginLeft = new int[hostItemNum];
+        int[] lastViewPadding = new int[hostItemNum];
+        int screenWidth = CommonUtil.getWidth(mContext);
+        int screenHeight = CommonUtil.getHeight(mContext);
+
+        imageViewId[0] = R.id.imgItemType;
+        imageViewId[1] = R.id.imgItemTime;
+        imageViewId[2] = R.id.imgItemDuration;
+
+        textViewId[0] = R.id.textItemType;
+        textViewId[1] = R.id.textItemTime;
+        textViewId[2] = R.id.textItemDuration;
+
+        lastId[0] = R.id.spinnerType;
+        lastId[1] = R.id.editTextTime;
+        lastId[2] = R.id.spinnerDuration;
+
+        for (int i=0;i<hostItemNum;i++) {
+            imageViewWidth[i] = imageViewHeight[i] = screenWidth / 10;
+            imageViewMarginTop[i] = CommonUtil.dip2px(mContext, 32)
+                    + (imageViewHeight[i] + CommonUtil.dip2px(mContext, 16)) * i;
+            imageViewPadding[i] = imageViewHeight[i] / 8;
+
+            textViewWidth[i] = screenWidth * 2 / 10;
+            textViewHeight[i] = imageViewHeight[i];
+            textViewMarginTop[i] = imageViewMarginTop[i];
+            textViewMarginLeft[i] = imageViewWidth[i];
+            textViewPadding[i] = textViewHeight[i] / 8;
+
+            ImageView iv = (ImageView)findViewById(imageViewId[i]);
+            RelativeLayout.LayoutParams ivlp = new
+                    RelativeLayout.LayoutParams(imageViewWidth[i], imageViewHeight[i]);
+            ivlp.topMargin = imageViewMarginTop[i];
+            iv.setLayoutParams(ivlp);
+            iv.setPadding(imageViewPadding[i], imageViewPadding[i], imageViewPadding[i], imageViewPadding[i]);
+
+            TextView tv = (TextView)findViewById(textViewId[i]);
+            RelativeLayout.LayoutParams tvlp = new
+                    RelativeLayout.LayoutParams(textViewWidth[i], textViewHeight[i]);
+            tvlp.topMargin = textViewMarginTop[i];
+            tvlp.leftMargin = textViewMarginLeft[i];
+            tv.setLayoutParams(tvlp);
+            tv.setPadding(textViewPadding[i], textViewPadding[i], textViewPadding[i], textViewPadding[i]);
+            tv.setTextColor(getResources().getColor(R.color.black));
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, textViewHeight[i]/2);
+
+
+        }
+
+        String[] listCategory = getResources().getStringArray(R.array.category_array);
+        Spinner spinnerType = (Spinner)findViewById(R.id.spinnerType);
+        SearchSpinnerAdapter adapterCategory = new SearchSpinnerAdapter(this, listCategory);
+        adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerType.setAdapter(adapterCategory);
+        spinnerType.setSelection(0, true);
+
+        String[] listDuration = getResources().getStringArray(R.array.duration_array);
+        Spinner spinnerDuration = (Spinner)findViewById(R.id.spinnerDuration);
+        SearchSpinnerAdapter adapterDuration = new SearchSpinnerAdapter(this, listDuration);
+        adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDuration.setAdapter(adapterDuration);
+        spinnerDuration.setSelection(0, true);
+
     }
 
     public void updateTabGuestPage() {
